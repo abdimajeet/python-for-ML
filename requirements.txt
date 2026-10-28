@@ -1,0 +1,17 @@
+requests
+pytest
+mypy
+numpy
+pandas
+matplotlib
+seaborn
+pillow
+tabulate
+httpx
+scikit-learn
+joblib
+torch
+torchvision
+fastapi
+uvicorn
+anthropic

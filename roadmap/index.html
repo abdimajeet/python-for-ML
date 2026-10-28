@@ -1,0 +1,341 @@
+<title>Python to ML in 100 Days</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column; a level band per stage, each day a row with a checkbox. */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --fg:#17212b; --muted:#5b6876; --line:#dbe1e7;
+  --accent:#2f6db0; --accent-soft:#e3edf8; --mark:#e8b82e;
+  --l1:#2f8f6b; --l2:#2f6db0; --l3:#7a52b3; --l4:#c0652c; --l5:#b33d5a;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10161c; --surface:#18212a; --fg:#e6ebf0; --muted:#97a4b2; --line:#2a3642;
+  --accent:#7fb2ea; --accent-soft:#1d2d3f; --mark:#f0c954;
+  --l1:#5cc49c; --l2:#7fb2ea; --l3:#b593e6; --l4:#ee9a62; --l5:#ee7f9b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10161c; --surface:#18212a; --fg:#e6ebf0; --muted:#97a4b2; --line:#2a3642;
+  --accent:#7fb2ea; --accent-soft:#1d2d3f; --mark:#f0c954;
+  --l1:#5cc49c; --l2:#7fb2ea; --l3:#b593e6; --l4:#ee9a62; --l5:#ee7f9b; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:920px;margin:0 auto;padding-block:40px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:36px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:62ch;margin:10px 0 0;font-size:16px}
+.prompt{font-family:var(--mono);font-size:13px;color:var(--accent);margin-bottom:10px}
+.loop{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--mono);font-size:13px}
+.loop span{background:var(--surface);border:1px solid var(--line);padding:5px 10px;border-radius:6px}
+.loop i{color:var(--muted);font-style:normal}
+.note{font-size:14px;color:var(--muted);max-width:68ch;margin:0}
+.note b{color:var(--fg)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{font:500 13px var(--body);background:var(--surface);color:var(--fg);border:1px solid var(--line);padding:6px 12px;border-radius:999px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.tabs button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#q{flex:1;min-width:0;max-width:260px;font:14px var(--body);padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.progress{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:auto}
+.level{display:flex;flex-direction:column;gap:14px}
+.lhead{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;border-top:3px solid var(--lc);padding-top:14px}
+.lhead h2{font-size:24px;font-weight:700}
+.range{font-family:var(--mono);font-size:12px;color:var(--lc);letter-spacing:.06em;text-transform:uppercase}
+.goal{flex-basis:100%;color:var(--muted);font-size:14px;margin:0}
+.days{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.day{display:grid;grid-template-columns:auto 52px 1fr;gap:12px;align-items:start;padding:12px 14px;border-top:1px solid var(--line)}
+.day:first-child{border-top:0}
+.day input{margin-top:4px;width:16px;height:16px;accent-color:var(--lc)}
+.num{font-family:var(--mono);font-size:12px;color:var(--lc);padding-top:3px;font-variant-numeric:tabular-nums}
+.body{min-width:0}
+.title{font-weight:600}
+.learn{color:var(--muted);font-size:13.5px;margin-top:2px}
+.learn code{font-family:var(--mono);font-size:12.5px}
+.tag{display:inline-block;font:500 11px var(--mono);letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:2px}
+.cap{background:var(--lc);color:var(--surface)}
+.sug{border:1px dashed var(--mark);color:var(--fg)}
+.day.done .title{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
+.empty{color:var(--muted);font-size:14px}
+a.title{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--line)}
+a.title:hover{border-bottom-color:var(--lc)}
+a.title:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ready{font:500 11px var(--mono);color:var(--lc);margin-left:6px;white-space:nowrap}
+/* Day view */
+#dayview{display:flex;flex-direction:column;gap:22px}
+.back{font:500 14px var(--body);color:var(--accent);text-decoration:none;align-self:flex-start}
+.dhead{border-top:3px solid var(--lc);padding-top:14px;display:flex;flex-direction:column;gap:6px}
+.dhead h2{font-size:clamp(26px,5vw,36px);font-weight:700}
+.dintro{color:var(--muted);font-size:16px;margin:0;max-width:64ch}
+.steps{display:flex;flex-wrap:wrap;gap:6px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line)}
+.steps button{font:500 13px var(--body);display:flex;gap:8px;align-items:center;background:var(--surface);color:var(--fg);border:1px solid var(--line);padding:7px 12px;border-radius:8px;cursor:pointer}
+.steps button b{font:500 11px var(--mono);color:var(--muted)}
+.steps button[aria-current="step"]{border-color:var(--lc);box-shadow:inset 0 -2px 0 var(--lc)}
+.steps button:focus-visible,.navbtn:focus-visible,.copy:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stepbody{display:flex;flex-direction:column;gap:26px;max-width:72ch}
+.stepbody h3{font-size:20px;font-weight:700}
+.block{display:flex;flex-direction:column;gap:10px;min-width:0}
+.block p{margin:0}
+.block code,.stepbody li code,.stepbody p code{font-family:var(--mono);font-size:.9em;background:var(--accent-soft);padding:1px 4px;border-radius:4px}
+.code{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface);min-width:0}
+.codebar{display:flex;justify-content:space-between;align-items:center;padding:5px 10px;font:500 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);background:var(--bg)}
+.code pre{margin:0;padding:12px 14px;overflow-x:auto;font:13px/1.6 var(--mono);color:var(--fg)}
+.code pre code{background:none;padding:0;font-size:inherit}
+.out pre{color:var(--muted)}
+.copy{font:500 11px var(--mono);background:none;border:1px solid var(--line);color:var(--fg);border-radius:4px;padding:2px 8px;cursor:pointer;text-transform:uppercase;letter-spacing:.05em}
+.ex{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.ex .qn{font:500 12px var(--mono);color:var(--lc)}
+details summary{cursor:pointer;font-weight:500;color:var(--accent)}
+details[open] summary{margin-bottom:8px}
+.explain{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.explain li{display:flex;flex-direction:column;gap:4px;padding-left:12px;border-left:2px solid var(--line)}
+.explain .ln{font:13px var(--mono);color:var(--lc);overflow-wrap:anywhere}
+.file{font:500 13px var(--mono);color:var(--muted)}
+.checks{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.tip{background:var(--accent-soft);border-radius:8px;padding:12px 14px;font-size:14px}
+.pending{border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--muted)}
+.dnav{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:16px;max-width:72ch}
+.navbtn{font:600 14px var(--body);background:var(--fg);color:var(--bg);border:0;border-radius:8px;padding:10px 16px;cursor:pointer;text-decoration:none}
+.navbtn.ghost{background:var(--surface);color:var(--fg);border:1px solid var(--line)}
+.navbtn.donebtn[aria-pressed="true"]{background:var(--lc);color:var(--surface)}
+@media (max-width:520px){.day{grid-template-columns:auto 40px 1fr;gap:10px}.progress{margin-left:0;flex-basis:100%}.steps button{padding:6px 9px}}
+</style>
+
+<div class="wrap">
+  <div id="listview" style="display:flex;flex-direction:column;gap:36px">
+  <header>
+    <div class="prompt">&gt;&gt;&gt; import curriculum</div>
+    <h1>Python to ML in 100 Days</h1>
+    <p class="lede">A five-level path from your first <code>print()</code> to training and serving a machine-learning model. Each day teaches one idea, practises it, then uses it in a small project you publish.</p>
+  </header>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h3 style="font-size:17px">How every day runs</h3>
+    <div class="loop"><span>Learn</span><i>→</i><span>Practice</span><i>→</i><span>Build</span><i>→</i><span>Test</span><i>→</i><span>Understand</span><i>→</i><span>Publish</span></div>
+    <p class="note">Days are a roadmap, not a deadline. If a topic needs more practice, it gets a second day. <b>Capstone</b> days close each level by combining everything in it. Click any project to open its lesson, exercises, project code and tests. Items marked <span class="tag sug">suggested</span> come from the part of your brief that was cut off, so they are my proposal until you confirm them.</p>
+  </section>
+
+  <div class="controls">
+    <div class="tabs" id="tabs" role="group" aria-label="Filter by level"></div>
+    <input id="q" type="search" placeholder="Search topics or projects" aria-label="Search topics or projects">
+    <div class="progress" id="prog"></div>
+  </div>
+
+  <main id="levels" style="display:flex;flex-direction:column;gap:36px"></main>
+  </div>
+  <article id="dayview" hidden></article>
+</div>
+
+<script src="lessons-level1.js"></script>
+<script src="lessons-level2.js"></script>
+<script src="lessons-level3.js"></script>
+<script src="lessons-level4.js"></script>
+<script src="lessons-level5.js"></script>
+<script>
+const LEVELS=[
+ {n:1,name:"Python Fundamentals",goal:"Write, run and debug small programs on your own.",days:[
+  ["Hello, Python","Install Python and VS Code, run a script, use the interactive interpreter","Personal intro card printer"],
+  ["Variables and strings","Naming rules, <code>str</code>, <code>input()</code> and <code>print()</code>","Mad Libs story generator"],
+  ["Numbers and arithmetic","<code>int</code>, <code>float</code>, operators, <code>//</code>, <code>%</code>, <code>**</code>, rounding","Tip and bill splitter"],
+  ["Type conversion","<code>int()</code>, <code>float()</code>, <code>str()</code>, why <code>input()</code> is always text","Unit converter (km/miles, °C/°F)"],
+  ["Booleans and comparisons","<code>True</code>/<code>False</code>, <code>==</code> vs <code>is</code>, truthiness","Eligibility checker"],
+  ["Conditionals","<code>if</code> / <code>elif</code> / <code>else</code>, indentation as structure","BMI calculator with categories"],
+  ["Logical operators","<code>and</code>, <code>or</code>, <code>not</code>, combining conditions","Leap-year and grade checker"],
+  ["Putting it together","Menus, input validation, program flow","Four-function calculator"],
+  ["while loops","Loop conditions, <code>break</code>, <code>continue</code>, the <code>random</code> module","Number-guessing game"],
+  ["for loops and range()","Iterating, <code>range()</code>, nested loops","Multiplication table generator"],
+  ["Reading error messages","Tracebacks, common errors, print-debugging","Bug hunt: fix ten broken scripts"],
+  ["Lists","Creating, indexing, <code>append</code>, <code>remove</code>, looping over lists","In-memory to-do list"],
+  ["Slicing and list methods","Slices, <code>sort</code>, <code>min</code>/<code>max</code>/<code>sum</code>/<code>len</code>","Grade-book statistics"],
+  ["Tuples and unpacking","Immutability, tuple unpacking, when to prefer tuples","Rock, paper, scissors"],
+  ["String methods","<code>upper</code>, <code>strip</code>, <code>split</code>, <code>join</code>, <code>in</code>, character checks","Password strength checker"],
+  ["f-strings and formatting","Alignment, decimal places, multi-line strings","Shop receipt printer"],
+  ["Dictionaries","Keys and values, <code>get</code>, <code>items()</code>, updating","Contact book"],
+  ["Sets","Uniqueness, union, intersection, difference","Text comparer (shared and unique words)"],
+  ["Nested data","Lists of dicts, dicts of lists, looping through them","Quiz app with score tracking"],
+  ["Level 1 capstone","Everything in Level 1 combined in one program","Text adventure game",1]]},
+ {n:2,name:"Core Python Programming",goal:"Write organised programs that solve practical problems with real data.",days:[
+  ["Functions","<code>def</code>, calling, why functions exist","Refactor the calculator into functions"],
+  ["Parameters and return values","Defaults, keyword arguments, returning several values","Shipping cost calculator"],
+  ["Scope","Local vs global, the LEGB rule, avoiding <code>global</code>","Bank account simulator"],
+  ["*args and **kwargs","Flexible arguments, unpacking into calls","Pizza order builder"],
+  ["Built-in functions","<code>enumerate</code>, <code>zip</code>, <code>sorted</code>, <code>map</code>, <code>filter</code>, <code>any</code>/<code>all</code>","Class report card generator"],
+  ["Standard library tour","<code>math</code>, <code>random</code>, <code>string</code>, <code>secrets</code>","Dice roller and password generator"],
+  ["List comprehensions","Building lists in one expression, filtering with <code>if</code>","Data filter toolkit"],
+  ["Dict and set comprehensions","Transforming and inverting mappings","Word frequency counter"],
+  ["Text files","<code>open()</code>, modes, <code>with</code>, reading line by line","Daily journal app"],
+  ["Files and folders","<code>pathlib</code>, listing, moving and renaming files","Downloads folder organiser"],
+  ["Exception handling","<code>try</code> / <code>except</code> / <code>else</code> / <code>finally</code>, raising errors","Crash-proof calculator"],
+  ["JSON","<code>json.load</code>/<code>dump</code>, saving program state","To-do list that remembers"],
+  ["CSV","<code>csv.reader</code>, <code>DictReader</code>, <code>DictWriter</code>","Expense tracker"],
+  ["Modules and packages","<code>import</code>, <code>__name__ == \"__main__\"</code>, splitting code into files","Expense tracker as a package"],
+  ["Recursion","Base cases, the call stack, recursion vs loops","Folder tree printer"],
+  ["Problem solving","Breaking problems down, linear and binary search, Big-O intuition","Search and sort by hand"],
+  ["Lambdas and sorting","<code>lambda</code>, <code>key=</code>, sorting by several fields","Game leaderboard ranker"],
+  ["Dates and times","<code>datetime</code>, <code>timedelta</code>, parsing and formatting","Birthday and event countdown"],
+  ["Virtual environments and pip","<code>venv</code>, <code>pip install</code>, <code>requirements.txt</code>","QR code generator with a third-party package"],
+  ["Level 2 capstone","Functions, files, modules, errors and dates together","Personal finance command-line app",1]]},
+ {n:3,name:"Intermediate Python & Software Engineering",goal:"Build maintainable applications with professional practices.",days:[
+  ["Classes and objects","<code>class</code>, instances, why OOP","Pet simulator"],
+  ["Constructors and methods","<code>__init__</code>, <code>self</code>, instance vs class attributes","Library book tracker"],
+  ["Special methods","<code>__str__</code>, <code>__repr__</code>, <code>__eq__</code>, <code>__add__</code>","Fraction and vector classes"],
+  ["Inheritance","Subclasses, <code>super()</code>, overriding","Employee payroll system"],
+  ["Composition","Has-a vs is-a, objects that contain objects","Shopping cart with products"],
+  ["Encapsulation","Naming conventions, <code>@property</code>, validation","Thermostat with safe limits"],
+  ["Iterators","<code>__iter__</code>, <code>__next__</code>, how <code>for</code> really works","Music playlist iterator"],
+  ["Generators","<code>yield</code>, lazy evaluation, generator expressions","Streaming log-file reader"],
+  ["Decorators","Functions as objects, wrapping, <code>functools.wraps</code>","Timer and retry decorators"],
+  ["Context managers","<code>with</code>, <code>__enter__</code>/<code>__exit__</code>, <code>contextlib</code>","Safe file writer and code timer"],
+  ["Type hints and docstrings","Annotations, <code>mypy</code>, writing useful docstrings","Typed inventory system"],
+  ["Testing with pytest","Test functions, assertions, fixtures","Test suite for earlier projects"],
+  ["Test-driven development","Red, green, refactor","Password validator built test-first"],
+  ["Debugging and logging","VS Code debugger, breakpoints, the <code>logging</code> module","Add logging to the folder organiser"],
+  ["Git and GitHub workflows","Commits, branches, pull requests, <code>.gitignore</code>, READMEs","Notes app developed on feature branches"],
+  ["REST APIs","HTTP basics, <code>requests</code>, status codes, JSON responses","Weather CLI using a free public API"],
+  ["Working with API data","Query parameters, pagination, API keys kept out of code","Currency converter"],
+  ["SQL fundamentals","Tables, <code>SELECT</code>, <code>WHERE</code>, <code>JOIN</code>, <code>sqlite3</code>","Movie database explorer"],
+  ["Database-backed apps","CRUD, parameterised queries, schema design","Habit tracker on SQLite"],
+  ["Level 3 capstone","OOP, SQLite, tests, logging and clean architecture","Library management system",1]]},
+ {n:4,name:"Advanced Python & Data Science Foundations",goal:"Write fast, concurrent code and analyse real datasets.",days:[
+  ["Advanced functions","Closures, <code>functools.partial</code>, <code>lru_cache</code>","Memoised Fibonacci and speed comparison"],
+  ["Advanced OOP design","<code>dataclasses</code>, abstract base classes, protocols","Pluggable payment processors"],
+  ["Design patterns","Strategy, factory and observer in Python style","Notification system"],
+  ["Advanced iteration","<code>itertools</code>, <code>yield from</code>, generator pipelines","Log analysis pipeline"],
+  ["Regular expressions I","Patterns, character classes, <code>re.findall</code>","Email and phone number extractor"],
+  ["Regular expressions II","Groups, named groups, substitution","Web server log parser"],
+  ["Threads","The GIL, <code>concurrent.futures</code>, I/O-bound work","Concurrent website status checker"],
+  ["Processes","<code>multiprocessing</code>, CPU-bound work, pools","Parallel prime finder"],
+  ["asyncio basics","Event loop, <code>async</code>/<code>await</code>, tasks","Async timers and countdowns"],
+  ["Async networking","<code>httpx</code> async client, <code>gather</code>, rate limits","Async API fetcher"],
+  ["Performance","<code>timeit</code>, <code>cProfile</code>, choosing data structures","Profile and speed up a slow script"],
+  ["Larger datasets","Chunked reading, generators over big files, memory use","Summarise a million-row CSV"],
+  ["Jupyter and NumPy arrays","Notebooks, <code>ndarray</code>, shapes, indexing","Exam score statistics"],
+  ["NumPy vectorisation","Broadcasting, avoiding loops, boolean masks","Image filters on pixel arrays"],
+  ["pandas DataFrames","Series, DataFrames, selecting and filtering","Explore a movies dataset"],
+  ["pandas manipulation","<code>groupby</code>, <code>merge</code>, pivot tables","Sales performance report"],
+  ["Data cleaning","Missing values, duplicates, types, outliers","Clean a messy real-world dataset"],
+  ["Data visualisation","Matplotlib line, bar, scatter and histogram charts","Visualise your expense data",0,1],
+  ["Exploratory data analysis","Seaborn, distributions, correlations, asking questions of data","Titanic passenger analysis",0,1],
+  ["Level 4 capstone","Load, clean, analyse and chart a dataset end to end","Data analysis report in a notebook",1,1]]},
+ {n:5,name:"Machine Learning & AI Foundations",goal:"Understand and build core ML models, then ship one.",days:[
+  ["Linear algebra with NumPy","Vectors, matrices, dot products, why ML needs them","Linear algebra toolkit",0,1],
+  ["Statistics and probability","Mean, variance, distributions, sampling, simulation","A/B test simulator",0,1],
+  ["Gradients and optimisation","Derivatives as slopes, gradient descent","Gradient descent from scratch",0,1],
+  ["Linear regression from scratch","Loss functions, fitting a line with NumPy","House price predictor",0,1],
+  ["scikit-learn workflow","Train/test split, <code>fit</code>, <code>predict</code>, baselines","Regression with scikit-learn",0,1],
+  ["Classification","Logistic regression, probabilities, decision boundaries","Titanic survival classifier",0,1],
+  ["Model evaluation","Accuracy, precision, recall, confusion matrix, cross-validation","Classifier evaluation report",0,1],
+  ["Feature engineering","Scaling, encoding categories, scikit-learn pipelines","Housing pipeline",0,1],
+  ["Trees and forests","Decision trees, random forests, feature importance","Loan approval model",0,1],
+  ["Clustering","k-means, choosing k, unsupervised learning","Customer segmentation",0,1],
+  ["Dimensionality reduction","PCA, visualising high-dimensional data","Handwritten digits in 2-D",0,1],
+  ["Overfitting and tuning","Bias vs variance, regularisation, grid search","Tune a model properly",0,1],
+  ["Neural network from scratch","Neurons, activations, backpropagation in NumPy","Tiny network that learns XOR",0,1],
+  ["PyTorch basics","Tensors, autograd, devices","Linear regression in PyTorch",0,1],
+  ["Training neural networks","Datasets, training loops, loss curves","MNIST digit classifier",0,1],
+  ["Text and NLP basics","Tokenising, bag of words, TF-IDF","Movie review sentiment classifier",0,1],
+  ["Serving a model","Saving models, building an API with FastAPI","Prediction API",0,1],
+  ["Working with LLM APIs","Calling a hosted model, prompts, handling responses","Small study-assistant chatbot",0,1],
+  ["ML project structure","Reproducibility, configs, tests for ML code","Refactor an ML project into a package",0,1],
+  ["Final capstone","Data to model to API to portfolio, documented on GitHub","End-to-end ML application",1,1]]}
+];
+const COLORS=["--l1","--l2","--l3","--l4","--l5"];
+const KEY="py100-done";
+let done=new Set();
+try{done=new Set(JSON.parse(localStorage.getItem(KEY)||"[]"))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify([...done]))}catch(e){}}
+let level=0;
+const tabs=document.getElementById("tabs"),q=document.getElementById("q"),root=document.getElementById("levels"),prog=document.getElementById("prog");
+const strip=s=>s.replace(/<[^>]+>/g,"").toLowerCase();
+function tabsRender(){
+  tabs.innerHTML="";
+  [["All",0],...LEVELS.map(l=>["Level "+l.n,l.n])].forEach(([t,v])=>{
+    const b=document.createElement("button");b.textContent=t;b.setAttribute("aria-pressed",String(level===v));
+    b.onclick=()=>{level=v;tabsRender();render()};tabs.appendChild(b)});
+}
+function render(){
+  const term=q.value.trim().toLowerCase();root.innerHTML="";let shown=0;
+  LEVELS.forEach((L,i)=>{
+    if(level&&level!==L.n)return;
+    const start=(L.n-1)*20;
+    const items=L.days.map((d,j)=>({d,num:start+j+1})).filter(({d})=>!term||strip(d[0]+" "+d[1]+" "+d[2]).includes(term));
+    if(!items.length)return;shown+=items.length;
+    const sec=document.createElement("section");sec.className="level";sec.style.setProperty("--lc",`var(${COLORS[i]})`);
+    sec.innerHTML=`<div class="lhead"><span class="range">Level ${L.n} · Days ${start+1}–${start+20}</span><h2>${L.name}</h2><p class="goal">Goal: ${L.goal}</p></div>`;
+    const ul=document.createElement("ul");ul.className="days";
+    items.forEach(({d,num})=>{
+      const li=document.createElement("li");li.className="day"+(done.has(num)?" done":"");
+      const id="d"+num;
+      li.innerHTML=`<input type="checkbox" id="${id}" ${done.has(num)?"checked":""} aria-label="Mark day ${num} done"><label class="num" for="${id}">DAY ${String(num).padStart(3,"0")}</label><div class="body"><div><a class="title" href="#day-${num}">${d[2]}</a>${d[3]?'<span class="tag cap">capstone</span>':""}${d[4]?'<span class="tag sug">suggested</span>':""}${LESSONS[num]?'<span class="ready">● lesson ready</span>':""}</div><div class="learn"><b>${d[0]}:</b> ${d[1]}</div></div>`;
+      li.querySelector("input").onchange=e=>{e.target.checked?done.add(num):done.delete(num);save();li.classList.toggle("done",e.target.checked);count()};
+      ul.appendChild(li)});
+    sec.appendChild(ul);root.appendChild(sec)});
+  if(!shown)root.innerHTML='<p class="empty">No days match that search. Try a topic like “files” or “pandas”.</p>';
+  count();
+}
+function count(){prog.textContent=`${done.size} / 100 days done`}
+q.addEventListener("input",render);
+
+/* ---- Day view ---- */
+const LESSONS=window.LESSONS||{};
+const listview=document.getElementById("listview"),dayview=document.getElementById("dayview");
+const STEPS=["Lesson","Exercises","Project","Test & publish"];
+let cur={n:0,step:0};
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const codeBlock=(c,label="Python")=>`<div class="code"><div class="codebar"><span>${label}</span><button class="copy" type="button">Copy</button></div><pre><code>${esc(c)}</code></pre></div>`;
+const outBlock=o=>`<div class="code out"><div class="codebar"><span>Output</span></div><pre>${esc(o)}</pre></div>`;
+function info(n){const li=Math.floor((n-1)/20);return{li,L:LEVELS[li],d:LEVELS[li].days[(n-1)%20]}}
+
+function stepHTML(n,X,d){
+  const s=cur.step;
+  if(!X) return `<div class="pending"><p style="margin:0 0 8px"><b>${d[0]}:</b> ${d[1]}</p><p style="margin:0">The full lesson for this day isn't written yet. Lessons are added one level at a time; ask in your project thread when you reach it.</p></div>`;
+  if(s===0) return X.lesson.map(b=>`<section class="block"><h3>${b.h}</h3><p>${b.p}</p>${b.code?codeBlock(b.code):""}${b.out?outBlock(b.out):""}</section>`).join("");
+  if(s===1) return `<p class="tip">Try each exercise in VS Code or the interpreter before opening the solution. Getting it wrong first is part of learning.</p>`+
+    X.exercises.map((e,i)=>`<div class="ex"><span class="qn">EXERCISE ${n}.${i+1}</span><div>${e.q}</div>${e.hint?`<details><summary>Hint</summary><div>${e.hint}</div></details>`:""}<details><summary>Show solution</summary>${codeBlock(e.sol)}</details></div>`).join("");
+  if(s===2){const P=X.project;
+    return `<section class="block"><h3>${P.title}</h3><p>${P.brief}</p><p class="tip">Try to build it yourself from the brief first. Then compare your version with the code below and read the line notes.</p></section>`+
+    (P.starter?`<section class="block"><h3>Broken code to fix</h3>${codeBlock(P.starter,P.file)}</section>`:"")+
+    (P.files?`<section class="block"><h3>Project code</h3><span class="file">${P.file}</span>${P.files.map(([name,c])=>codeBlock(c,name)).join("")}${P.out?outBlock(P.out):""}</section>`:
+    `<section class="block"><h3>${P.starter?"Fixed code":"Project code"}</h3><span class="file">${P.file}</span>${P.starter?`<details><summary>Show the fixed version</summary>${codeBlock(P.code,P.file)}</details>`:codeBlock(P.code,P.file)}${P.out?outBlock(P.out):""}</section>`)+
+    `<section class="block"><h3>Understand the important lines</h3><ul class="explain">${P.explain.map(([l,t])=>`<li><span class="ln">${esc(l)}</span><span>${t}</span></li>`).join("")}</ul></section>`+
+    (P.stretch?`<section class="block"><h3>Stretch goals</h3><ul class="checks">${P.stretch.map(t=>`<li>${t}</li>`).join("")}</ul></section>`:"");}
+  const P=X.project;
+  return `<section class="block"><h3>Test it</h3><ul class="checks">${X.tests.map(t=>`<li>${t}</li>`).join("")}</ul></section>`+
+  `<section class="block"><h3>Check you understand</h3><p>Without looking at the notes, explain out loud what each part of <code>${P.file}</code> does. Any line you can't explain is the thing to ask about before moving on.</p></section>`+
+  `<section class="block"><h3>Publish to GitHub</h3><p>Save the file in your <code>python-100-days</code> folder and commit it.</p>${codeBlock(`git add ${P.file}\ngit commit -m "Day ${n}: ${P.title}"\ngit push`,"Terminal")}<p class="tip">Your GitHub repository isn't set up yet. When you reach your first publish, tell me and we'll set it up together. Git itself is taught properly on Day 55.</p></section>`;
+}
+
+function drawDay(){
+  const n=cur.n,{li,L,d}=info(n),X=LESSONS[n];
+  dayview.style.setProperty("--lc",`var(${COLORS[li]})`);
+  const last=cur.step===STEPS.length-1||!X;
+  const prev=cur.step>0&&X?`<button class="navbtn ghost" type="button" data-go="${cur.step-1}">← ${STEPS[cur.step-1]}</button>`:(n>1?`<a class="navbtn ghost" href="#day-${n-1}">← Day ${n-1}</a>`:"<span></span>");
+  const next=!last?`<button class="navbtn" type="button" data-go="${cur.step+1}">${STEPS[cur.step+1]} →</button>`:
+    `<span style="display:flex;gap:10px;flex-wrap:wrap">${X?`<button class="navbtn ghost donebtn" type="button" id="markdone" aria-pressed="${done.has(n)}">${done.has(n)?"✓ Day "+n+" complete":"Mark Day "+n+" complete"}</button>`:""}${n<100?`<a class="navbtn" href="#day-${n+1}">Day ${n+1} →</a>`:""}</span>`;
+  dayview.innerHTML=`<a class="back" href="#all">← All 100 days</a>
+  <header class="dhead"><span class="range">Level ${L.n} · Day ${n} of 100</span><h2>${d[2]}</h2><p class="dintro">${X?X.intro:d[1]}</p></header>
+  ${X?`<nav class="steps" aria-label="Day steps">${STEPS.map((t,i)=>`<button type="button" data-go="${i}" ${i===cur.step?'aria-current="step"':""}><b>${i+1}</b>${t}</button>`).join("")}</nav>`:""}
+  <div class="stepbody">${stepHTML(n,X,d)}</div>
+  <nav class="dnav">${prev}${next}</nav>`;
+}
+dayview.addEventListener("click",e=>{
+  const go=e.target.closest("[data-go]");
+  if(go){cur.step=+go.dataset.go;drawDay();window.scrollTo(0,0);return}
+  if(e.target.closest("#markdone")){done.has(cur.n)?done.delete(cur.n):done.add(cur.n);save();drawDay();count();return}
+  const c=e.target.closest(".copy");
+  if(c){const txt=c.closest(".code").querySelector("pre").innerText;
+    const ok=()=>{c.textContent="Copied";setTimeout(()=>c.textContent="Copy",1400)};
+    try{navigator.clipboard.writeText(txt).then(ok,()=>selectPre(c))}catch(err){selectPre(c)}}
+});
+function selectPre(c){const r=document.createRange();r.selectNodeContents(c.closest(".code").querySelector("pre"));const s=getSelection();s.removeAllRanges();s.addRange(r);c.textContent="Press Ctrl+C"}
+function route(){
+  const m=location.hash.match(/^#day-(\d+)$/);const n=m?+m[1]:0;
+  if(n>=1&&n<=100){if(n!==cur.n)cur={n,step:0};listview.hidden=true;dayview.hidden=false;drawDay();window.scrollTo(0,0)}
+  else{cur={n:0,step:0};dayview.hidden=true;listview.hidden=false;render()}
+}
+window.addEventListener("hashchange",route);
+tabsRender();route();
+</script>

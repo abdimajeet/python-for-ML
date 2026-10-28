@@ -1,0 +1,14 @@
+# Every setting that affects results lives here, not in the code.
+
+[data]
+test_size = 0.25
+seed = 99
+
+[model]
+kind = "random_forest"        # or "logistic_regression"
+n_estimators = 200            # random forest only
+max_depth = 6                 # random forest only
+C = 1.0                       # logistic regression only
+
+[output]
+dir = "artifacts"
